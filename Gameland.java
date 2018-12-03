@@ -439,14 +439,20 @@ public class Gameland {
     }
 
     public static double[] primeiroLugar(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
-        int[] maxPontos = new int[N_JOGOS];
+        String [] posiçãoj = new [];
+        String [] posiçãoprimeiro1 = new [];
+        int [] posiçãoprimeiro2 = new [];
+        int [] idjogo = new int [];
+        String[][] maxPontos = new int[N_JOGOS][];
         double[] premioPrim = new double[N_JOGOS];
         for (int i = 0; i < nParticipantes; i++) {
             maxPontos[i] = pontos[i][0];
             for (int j = 0; j < N_JOGOS; j++) {
                 if (pontos[i][j] > maxPontos[i]) {
-                    maxPontos[i] = pontos[i][j];
-                }
+                    maxPontos[0][i] = pontos[i][j];
+                    maxPontos[1][i] = "i,j";
+                } 
+              
             }
         }
         for (int i = 0; i < N_JOGOS; i++) {
