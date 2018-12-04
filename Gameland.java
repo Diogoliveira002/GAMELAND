@@ -452,7 +452,10 @@ public class Gameland {
                     maxPontos[0][i] = pontos[i][j];
                     maxPontos[1][i] = "i,j";
                 } 
-              
+                if (pontos[i][j] = maxPontos[i] {
+                    maxPontos[0][i] = maxPontos[i]+" e "+pontos[i][j];
+                    maxPontos[1][i] ="i,j";
+                }
             }
         }
         for (int i = 0; i < N_JOGOS; i++) {
