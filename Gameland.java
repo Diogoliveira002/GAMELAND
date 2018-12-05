@@ -23,7 +23,9 @@ public class Gameland {
 
     static Scanner input = new Scanner(System.in);
     static boolean matrizComPontos = false;
-
+    static int valorEquipa = 50;
+    static String nomeFich;
+    
     public static void main(String[] args) throws FileNotFoundException, IOException {
         String[] jogos = new String[N_JOGOS];
         String[][] participantes = new String[MAX_PARTICIPANTES][N_CAMPOS_INFO];
@@ -439,22 +441,15 @@ public class Gameland {
     }
 
     public static double[] primeiroLugar(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
-        String [] posiçãoj = new [];
-        String [] posiçãoprimeiro1 = new [];
-        int [] posiçãoprimeiro2 = new [];
-        int [] idjogo = new int [];
-        String[][] maxPontos = new int[N_JOGOS][];
+        int[] maxPontos = new int[N_JOGOS];
         double[] premioPrim = new double[N_JOGOS];
+        int[] posJogador = new int[N_JOGOS];
         for (int i = 0; i < nParticipantes; i++) {
             maxPontos[i] = pontos[i][0];
             for (int j = 0; j < N_JOGOS; j++) {
                 if (pontos[i][j] > maxPontos[i]) {
-                    maxPontos[0][i] = pontos[i][j];
-                    maxPontos[1][i] = "i,j";
-                } 
-                if (pontos[i][j] = maxPontos[i] {
-                    maxPontos[0][i] = maxPontos[i]+" e "+pontos[i][j];
-                    maxPontos[1][i] ="i,j";
+                    maxPontos[i] = pontos[i][j];
+                    posJogador[i]= j;
                 }
             }
         }
@@ -464,13 +459,44 @@ public class Gameland {
         return premioPrim;
     }   
 
-    public static double[] premioEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
-
-    
-
-    
-
-    public static double somaPremios() {
-
+    public static int [][] primeiroLugarEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
+        int[][] pontosEquipa = new int[N_JOGOS][nParticipantes/3];
+        for (int i = 0; i < nParticipantes; i++) {
+            for (int j = 0; j < N_JOGOS; j++) {
+                if (i%3==0) {
+                    pontosEquipa[i/3][j] = pontosEquipa[i][j]+pontosEquipa[i+1][j]+pontosEquipa[i+2][j];   
+                }
+            }
+        }
+        return pontosEquipa;
     }
+        
+        
+    public static int [][] premioEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
+        int[] maxEquipa = new int[N_JOGOS];
+        int[] posEquipa = new int[N_JOGOS];
+        int[][] premiosEquipa = new int[N_JOGOS][nParticipantes];
+        for (int i = 0; i < nParticipantes; i++) {
+            maxEquipa[i] = pontos[i][0];
+            for (int j = 0; j < N_JOGOS; j++) {
+                if (pontos[i][j] > maxEquipa[i]) {
+                    maxEquipa[i] = pontos[i][j];
+                    posEquipa[i]= j;
+                }
+            }
+        }
+        for (int i = 0; i < nParticipantes; i++) {
+            for (int j = 0; j < N_JOGOS; j++) {
+                if (j == posEquipa[i]) {
+                    premiosEquipa[i][j*3]= valorEquipa;
+                    premiosEquipa[i][j*3+1]= valorEquipa;
+                    premiosEquipa[i][j*3+2]= valorEquipa;
+                    
+                }
+            }
+            
+        }
+    return premiosEquipa;
+    }
+
 }

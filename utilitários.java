@@ -6,6 +6,7 @@
 package gameland;
 
 import java.util.Calendar;
+import static gameland.Gameland.nomeFich;
 
 /**
  *
@@ -49,27 +50,35 @@ public class utilitários {
         String[] aux = data.trim().split("/");
         String dia = aux[0].length() < 2 ? "0" + aux[0] : aux[0];
         String mes = aux[1].length() < 2 ? "0" + aux[1] : aux[1];
-        return aux[2] + mes + dia;
+        String aaaammdd = aux[2]+mes+dia;
+        return aaaammdd;
     }
 
     /**
-     * Dada a data de nascimento retorna a idade
+     * Dada a data de nascimento, verifica se participante faz anos no dia do
+     * evento do jogo
      *
      * @param anoMesDia data de nascimento no formato aaaammdd
-     * @return idade
+     * @return true se for dia de aniversário
      */
-    public static int idade(String anoMesDia) {
-        int ano = Integer.parseInt(anoMesDia.substring(0, 4));
-        int mes = Integer.parseInt(anoMesDia.substring(4, 6));
-        int dia = Integer.parseInt(anoMesDia.substring(6, 8));
-        Calendar hoje = Calendar.getInstance();
-        int diaH = hoje.get(Calendar.DAY_OF_MONTH);
-        int mesH = hoje.get(Calendar.MONTH) + 1;
-        int anoH = hoje.get(Calendar.YEAR);
-        if (mesH > mes || mesH == mes && diaH >= dia) {
-            return anoH - ano;
+    public static boolean verificarAniversario(String anoMesDia) {
+        int mesP = Integer.parseInt(anoMesDia.substring(4, 6));
+        int diaP = Integer.parseInt(anoMesDia.substring(6, 8));
+        int mesE = Integer.parseInt(nomeFich.substring(4, 6));
+        int diaE = Integer.parseInt(nomeFich.substring(6, 8));
+        if (mesP == mesE && diaP == diaE) {
+            return true;
         }
-        return anoH - ano - 1;
+        return false;
     }
 
+    public static int idade(String anoMesDia) {
+        int idadeP = 0;
+        if (verificarAniversario()) {
+            int anoP = Integer.parseInt(anoMesDia.substring(0, 4));
+            int anoE = Integer.parseInt(nomeFich.substring(0, 4));
+            idadeP = anoE - anoP;
+        }
+        return idadeP;
+    }
 }
