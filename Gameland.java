@@ -543,10 +543,27 @@ public static int[][] premioEquipa(int[][] pontos, int nParticipantes, int[] max
             }
         return premioAniv;
     }
+     public static int eliminarEquipa(String[][] participantes, int nParticipantes, String equipa) {        
+        int nErr = 0;
+        for (int i = 0; i < nParticipantes; i=i+3){
+            if (participantes[i][3].equalsIgnoreCase(equipa)){
+                for (int l = i; l < i + 3; l++ ){
+                    for (int c = 0; c < 4; c++){
+                        participantes [l][c] = participantes [l+3][c];
+                    }
+                }
+                nErr = nErr + 3;
+            }     
+        }
+        nParticipantes = nParticipantes - nErr;
+        return nParticipantes;
+    }
+}
 
     public static int calculoAniversario(int anos) {
         int premioAniversario = 2 * anos;
         return premioAniversario;
     }
+    
 
 }
