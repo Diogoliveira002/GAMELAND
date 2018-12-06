@@ -108,9 +108,11 @@ public class Gameland {
                     } else {
                         System.out.println("Erro no carregamento da equipa. Verifique ficheiro");
                     }
-                    break;
-                    break;
+                    break;                    
                 case 10:
+                    input.nextLine();
+                    System.out.println("Indique o nome da equipa que pretende obter informações acerca dos prémios:");
+                    String EquipaPremios = input.nextLine();
                     break;
                 case 11:
                     break;
@@ -472,7 +474,7 @@ public class Gameland {
         }
         return maxPontosJogo;
     }
-
+    
     public static double[][] primeiroLugar(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
         int[] maxPontosAux = new int[N_JOGOS];
         double[][] premioPrim = new double[N_JOGOS][nParticipantes];
@@ -500,24 +502,26 @@ public class Gameland {
         }
         return premioPrim;
     }
+
     public static int[][] primeiroLugarEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo, String[] jogos, String pontosJogo) {
+        int i = 0;
         int[][] pontosEquipa = new int[N_JOGOS][nParticipantes / 3];
         int id = idJogo(jogos, pontosJogo);
-        for (int i = 0; i < 6; i++) {
-            for(int l = 0; l < nParticipantes/3; l=l+3){
-                pontosEquipa[id][l] = pontos[id][l] + pontos[id][l+1] + pontos[id][l+2];
-            }
+        for(int L = 0; L < nParticipantes; L=L+3){
+            pontosEquipa[id][i] = pontos[id][L] + pontos[id][L+1] + pontos[id][L+2];
+        i++;    
         }
-    return pontosEquipa ;
-    }
+    return pontosEquipa;
+}
+
 public static int[][] premioEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo, String[]jogos, String pontosJogo) {
         int[] maxEquipa = new int[N_JOGOS];
         int[] posEquipa = new int[N_JOGOS];
         int[][]pontosEquipa = primeiroLugarEquipa(pontos, nParticipantes, maxPontosJogo, jogos, pontosJogo);
         int[][] premiosEquipa = new int[N_JOGOS][nParticipantes];
-        for (int i = 0; i < nParticipantes/3; i++) {
+        for (int i = 0; i < N_JOGOS; i++) {
             maxEquipa[i] = pontosEquipa[i][0];
-            for (int j = 0; j < N_JOGOS; j++) {
+            for (int j = 0; j < nParticipantes / 3; j++) {
                 if (pontosEquipa[i][j] > maxEquipa[i]) {
                     maxEquipa[i] = pontosEquipa[i][j];
                     posEquipa[i] = j;
@@ -569,12 +573,25 @@ public static int[][] premioEquipa(int[][] pontos, int nParticipantes, int[] max
         nParticipantes = nParticipantes - nErr;
         return nParticipantes;
     }
-}
+       
+    public static void infPremiosEquipa (double premios[][], String EquipaPremios, String participantes [][],int nParticipantes, String jogos [], String pontosJogo){
+        int id = idJogo(jogos, pontosJogo); 
+        String ElementosEquipa[][] = new String [5][2];
+        for (int i = 0; i < nParticipantes; i=i+3){
+            if (participantes[i][3].equalsIgnoreCase(EquipaPremios));{
+                for(int l = 0; l < 3; l++){
+                    System.out.println("Para o id de jogo "+id+":");
+                    System.out.println("O jogador "+participantes[j][1]+" da equipa "+EquipaPremios+" tem "+)
+                }
+            }
+        }
+    }
+                  
 
+         
     public static int calculoAniversario(int anos) {
         int premioAniversario = 2 * anos;
         return premioAniversario;
     }
     
-
 }
