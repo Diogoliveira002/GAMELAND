@@ -14,6 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Formatter;
 import java.util.Scanner;
+import static gameland.utilitários.converterddmmaaaaParaaaammdd;
+import static gameland.utilitários.idade;
+import static gameland.utilitários.verificarAniversario;
 
 /**
  *
@@ -23,9 +26,8 @@ public class Gameland {
 
     static Scanner input = new Scanner(System.in);
     static boolean matrizComPontos = false;
-    static int valorEquipa = 50;
-    static String nomeFich;
-    
+    static final int VALOR_EQUIPA = 50;
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         String[] jogos = new String[N_JOGOS];
         String[][] participantes = new String[MAX_PARTICIPANTES][N_CAMPOS_INFO];
@@ -33,14 +35,16 @@ public class Gameland {
         int[][] pontos = new int[MAX_PARTICIPANTES][N_JOGOS];
         double[][] premios = new double[MAX_PARTICIPANTES][N_JOGOS];
         int op;
+        String dataEvento = null;
+        String pontosJogo = null;
         do {
             op = menu();
             switch (op) {
                 case 1:
                     input.nextLine();
                     System.out.println("Qual a data do evento (AAAAMMDD)?");
-                    String nomeFich = input.nextLine();
-                    if (carregarJogosDoEvento(nomeFich + ".txt", jogos) == true) {
+                    dataEvento = input.nextLine();
+                    if (carregarJogosDoEvento(dataEvento + ".txt", jogos) == true) {
                         System.out.println("Jogos carregados com sucesso");
                     } else {
                         System.out.println("Erro no carregamento dos jogos. Verifique ficheiro");
@@ -52,7 +56,7 @@ public class Gameland {
                 case 3:
                     input.nextLine();
                     System.out.println("Qual é o nome do ficheiro de participantes que pretende carregar (NOMEDAEQUIPA)?");
-                    nomeFich = input.nextLine();
+                    String nomeFich = input.nextLine();
                     int aux = lerInfoFicheiro(nomeFich, participantes, nParticipantes);
                     if (aux > nParticipantes) {
                         System.out.println("Equipa carregada com sucesso");
@@ -73,7 +77,7 @@ public class Gameland {
                 case 6:
                     input.nextLine();
                     System.out.println("Qual o nome do ficheiro com os resultados do jogo (AAAAMMDD_IDJOGO) que pretende carregar?");
-                    String pontosJogo = input.nextLine();
+                    pontosJogo = input.nextLine();
                     carregarPontosJogo(pontos, nParticipantes, participantes, pontosJogo, jogos);
                     if (matrizComPontos = true) {
                         System.out.println("Pontos carregados com sucesso");
@@ -91,6 +95,7 @@ public class Gameland {
 
                     break;
                 case 8:
+                    preencherPremios(premios, pontos, nParticipantes, jogos, dataEvento, participantes, pontosJogo);
                     break;
                 case 9:
                     break;
@@ -352,20 +357,10 @@ public class Gameland {
     }
 
     private static void carregarPontosJogo(int[][] pontos, int nParticipantes, String[][] participantes, String pontosJogo, String[] jogos) throws FileNotFoundException {
+        String[] emailPontos = new String[MAX_PARTICIPANTES];
         String[] tempId = pontosJogo.split("_");
         String idJogo = tempId[tempId.length - 1];
-        String[] idJogoT = new String[N_JOGOS];
-        String[] emailPontos = new String[MAX_PARTICIPANTES];
-        int linhaId = 0;
-        for (int i = 0; i < jogos.length; i++) {
-            idJogoT[i] = ((jogos[i].split("-"))[0]);
-        }
-        for (int i = 0; i < idJogoT.length; i++) {
-            if (idJogoT[i].equalsIgnoreCase(idJogo)) {
-                linhaId = i;
-                break;
-            }
-        }
+        int linhaId = idJogo(jogos, pontosJogo);
         int i = 0;
         Scanner fInput = new Scanner(new File(pontosJogo));
         while (fInput.hasNextLine() && i < nParticipantes) {
@@ -382,6 +377,23 @@ public class Gameland {
             }
             i++;
         }
+    }
+
+    private static int idJogo(String[] jogos, String pontosJogo) {
+        String[] tempId = pontosJogo.split("_");
+        String idJogo = tempId[tempId.length - 1];
+        String[] idJogoT = new String[N_JOGOS];
+        int id = 0;
+        for (int i = 0; i < jogos.length; i++) {
+            idJogoT[i] = ((jogos[i].split("-"))[0]);
+        }
+        for (int i = 0; i < idJogoT.length; i++) {
+            if (idJogoT[i].equalsIgnoreCase(idJogo)) {
+                id = i;
+                break;
+            }
+        }
+        return id;
     }
 
     private static boolean validarPontos(String[] jogos, String pontosJogo, String idJogo, int linhaId, String linha) throws FileNotFoundException {
@@ -427,9 +439,19 @@ public class Gameland {
         }
     }
 
-    public static void preencherPremios(double[][] premios, int[][] pontos, int nParticipantes) {
-        for (int i = 0; i < nParticipantes; i++);
-
+    public static void preencherPremios(double[][] premios, int[][] pontos, int nParticipantes, String[] jogos, String dataEvento, String[][] participantes, String pontosJogo) {
+        int[] maxPontosJogo = maximoPontos(jogos);
+        double[][] premioPrim = primeiroLugar(pontos, nParticipantes, maxPontosJogo);
+        int[][] premioEquipas = premioEquipa(pontos, nParticipantes, maxPontosJogo, jogos, pontosJogo);
+        int[][] premioAniversarios = premioAniversario(participantes, dataEvento, nParticipantes);
+        for (int i = 0; i < nParticipantes; i++) {
+            for (int j = 0; j < N_JOGOS; j++) {
+                premios[i][j] = premioEquipas[i][j] + premioPrim[i][j];
+                if (!(premios[i][j] == 0)) {
+                    premios[i][j] = premios[i][j] + premioAniversarios[i][j];
+                }
+            }
+        }
     }
 
     public static int[] maximoPontos(String[] jogos) {
@@ -440,63 +462,91 @@ public class Gameland {
         return maxPontosJogo;
     }
 
-    public static double[] primeiroLugar(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
-        int[] maxPontos = new int[N_JOGOS];
-        double[] premioPrim = new double[N_JOGOS];
-        int[] posJogador = new int[N_JOGOS];
+    public static double[][] primeiroLugar(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
+        int[] maxPontosAux = new int[N_JOGOS];
+        double[][] premioPrim = new double[N_JOGOS][nParticipantes];
+        int[][] maxPontos = new int[N_JOGOS][nParticipantes];
         for (int i = 0; i < nParticipantes; i++) {
-            maxPontos[i] = pontos[i][0];
+            maxPontosAux[i] = pontos[i][0];
             for (int j = 0; j < N_JOGOS; j++) {
-                if (pontos[i][j] > maxPontos[i]) {
-                    maxPontos[i] = pontos[i][j];
-                    posJogador[i]= j;
+                if (pontos[i][j] > maxPontosAux[i]) {
+                    maxPontosAux[i] = pontos[i][j];
                 }
             }
         }
-        for (int i = 0; i < N_JOGOS; i++) {
-            premioPrim[i] = (double) maxPontos[i] / maxPontosJogo[i] * 100;
+        for (int i = 0; i < nParticipantes; i++) {
+            for (int j = 0; j < N_JOGOS; j++) {
+                if (maxPontosAux[i] == pontos[i][j]) {
+                    maxPontos[i][j] = pontos[i][j];
+                }
+            }
+
+        }
+        for (int i = 0; i < nParticipantes; i++) {
+            for (int j = 0; j < N_JOGOS; j++) {
+                premioPrim[i][j] = (double) (maxPontos[i][j] / maxPontosJogo[i] * 100);
+            }
         }
         return premioPrim;
-    }   
-
-    public static int [][] primeiroLugarEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
-        int[][] pontosEquipa = new int[N_JOGOS][nParticipantes/3];
-        for (int i = 0; i < nParticipantes; i++) {
-            for (int j = 0; j < N_JOGOS; j++) {
-                if (i%3==0) {
-                    pontosEquipa[i/3][j] = pontosEquipa[i][j]+pontosEquipa[i+1][j]+pontosEquipa[i+2][j];   
-                }
-            }
-        }
-        return pontosEquipa;
     }
-        
-        
-    public static int [][] premioEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo) {
+
+    public static int[][] primeiroLugarEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo, String[] jogos, String pontosJogo) {
+        int[][] pontosEquipa = new int[N_JOGOS][nParticipantes / 3];
+        int id = idJogo(jogos, pontosJogo);
+        for (int i = 0; i < nParticipantes/3; i = i + 3) {
+                pontosEquipa[i][id] = pontos[i][id] + pontos[i + 1][id] + pontos[i + 2][id];
+        }
+    return pontosEquipa ;
+}
+
+public static int[][] premioEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo, String[]jogos, String pontosJogo) {
         int[] maxEquipa = new int[N_JOGOS];
         int[] posEquipa = new int[N_JOGOS];
+        int[][]pontosEquipa = primeiroLugarEquipa(pontos, nParticipantes, maxPontosJogo, jogos, pontosJogo);
         int[][] premiosEquipa = new int[N_JOGOS][nParticipantes];
-        for (int i = 0; i < nParticipantes; i++) {
-            maxEquipa[i] = pontos[i][0];
+        for (int i = 0; i < nParticipantes/3; i++) {
+            maxEquipa[i] = pontosEquipa[i][0];
             for (int j = 0; j < N_JOGOS; j++) {
-                if (pontos[i][j] > maxEquipa[i]) {
-                    maxEquipa[i] = pontos[i][j];
-                    posEquipa[i]= j;
+                if (pontosEquipa[i][j] > maxEquipa[i]) {
+                    maxEquipa[i] = pontosEquipa[i][j];
+                    posEquipa[i] = j;
                 }
             }
         }
         for (int i = 0; i < nParticipantes; i++) {
             for (int j = 0; j < N_JOGOS; j++) {
                 if (j == posEquipa[i]) {
-                    premiosEquipa[i][j*3]= valorEquipa;
-                    premiosEquipa[i][j*3+1]= valorEquipa;
-                    premiosEquipa[i][j*3+2]= valorEquipa;
-                    
+                    premiosEquipa[i][j * 3] = VALOR_EQUIPA;
+                    premiosEquipa[i][j * 3 + 1] = VALOR_EQUIPA;
+                    premiosEquipa[i][j * 3 + 2] = VALOR_EQUIPA;
+
                 }
             }
-            
+
         }
-    return premiosEquipa;
+        return premiosEquipa;
+    }
+
+    public static int[][] premioAniversario(String[][] participantes, String dataEventoS, int nParticipantes) {
+        String[] dataNasc = new String[MAX_PARTICIPANTES];
+        int[][] premioAniv = new int[N_JOGOS][MAX_PARTICIPANTES];
+        for (int i = 0; i < nParticipantes; i++) {
+                dataNasc[i] = participantes[i][2];
+                String dataNascimento = converterddmmaaaaParaaaammdd(dataNasc[i]);
+                if (verificarAniversario(dataEventoS, dataNascimento)) {
+                    int anos = idade(dataEventoS, dataNascimento);
+                    int premioAnos = calculoAniversario(anos);
+                    for (int j=0; j<N_JOGOS; j++) {
+                        premioAniv[j][i]= premioAnos;
+                    }
+                }
+            }
+        return premioAniv;
+    }
+
+    public static int calculoAniversario(int anos) {
+        int premioAniversario = 2 * anos;
+        return premioAniversario;
     }
 
 }

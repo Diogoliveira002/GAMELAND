@@ -5,9 +5,6 @@
  */
 package gameland;
 
-import java.util.Calendar;
-import static gameland.Gameland.nomeFich;
-
 /**
  *
  * @author rita
@@ -50,7 +47,7 @@ public class utilitários {
         String[] aux = data.trim().split("/");
         String dia = aux[0].length() < 2 ? "0" + aux[0] : aux[0];
         String mes = aux[1].length() < 2 ? "0" + aux[1] : aux[1];
-        String aaaammdd = aux[2]+mes+dia;
+        String aaaammdd = aux[2] + mes + dia;
         return aaaammdd;
     }
 
@@ -61,24 +58,22 @@ public class utilitários {
      * @param anoMesDia data de nascimento no formato aaaammdd
      * @return true se for dia de aniversário
      */
-    public static boolean verificarAniversario(String anoMesDia) {
-        int mesP = Integer.parseInt(anoMesDia.substring(4, 6));
-        int diaP = Integer.parseInt(anoMesDia.substring(6, 8));
-        int mesE = Integer.parseInt(nomeFich.substring(4, 6));
-        int diaE = Integer.parseInt(nomeFich.substring(6, 8));
+    public static boolean verificarAniversario(String anoMesDiaP, String anoMesDiaE) {
+        int mesP = Integer.parseInt(anoMesDiaP.substring(4, 6));
+        int diaP = Integer.parseInt(anoMesDiaP.substring(6, 8));
+        int mesE = Integer.parseInt(anoMesDiaE.substring(4, 6));
+        int diaE = Integer.parseInt(anoMesDiaE.substring(6, 8));
         if (mesP == mesE && diaP == diaE) {
             return true;
         }
         return false;
     }
 
-    public static int idade(String anoMesDia) {
+    public static int idade(String anoMesDiaP, String anoMesDiaE) {
         int idadeP = 0;
-        if (verificarAniversario()) {
-            int anoP = Integer.parseInt(anoMesDia.substring(0, 4));
-            int anoE = Integer.parseInt(nomeFich.substring(0, 4));
-            idadeP = anoE - anoP;
-        }
+        int anoP = Integer.parseInt(anoMesDiaP.substring(0, 4));
+        int anoE = Integer.parseInt(anoMesDiaE.substring(0, 4));
+        idadeP = anoE - anoP;
         return idadeP;
     }
 }
