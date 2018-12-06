@@ -98,6 +98,17 @@ public class Gameland {
                     preencherPremios(premios, pontos, nParticipantes, jogos, dataEvento, participantes, pontosJogo);
                     break;
                 case 9:
+                    input.nextLine();
+                    System.out.println("Indique o nome da equipa que pretende eliminar os dados.");
+                    String equipa = input.nextLine();
+                    int aux2 = eliminarEquipa(participantes, nParticipantes, equipa);
+                    if (aux2 < nParticipantes) {
+                        System.out.println("Equipa eliminada com sucesso");
+                        nParticipantes = aux2;
+                    } else {
+                        System.out.println("Erro no carregamento da equipa. Verifique ficheiro");
+                    }
+                    break;
                     break;
                 case 10:
                     break;
@@ -489,16 +500,16 @@ public class Gameland {
         }
         return premioPrim;
     }
-
     public static int[][] primeiroLugarEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo, String[] jogos, String pontosJogo) {
         int[][] pontosEquipa = new int[N_JOGOS][nParticipantes / 3];
         int id = idJogo(jogos, pontosJogo);
-        for (int i = 0; i < nParticipantes/3; i = i + 3) {
-                pontosEquipa[i][id] = pontos[i][id] + pontos[i + 1][id] + pontos[i + 2][id];
+        for (int i = 0; i < 6; i++) {
+            for(int l = 0; l < nParticipantes/3; l=l+3){
+                pontosEquipa[id][l] = pontos[id][l] + pontos[id][l+1] + pontos[id][l+2];
+            }
         }
     return pontosEquipa ;
-}
-
+    }
 public static int[][] premioEquipa(int[][] pontos, int nParticipantes, int[] maxPontosJogo, String[]jogos, String pontosJogo) {
         int[] maxEquipa = new int[N_JOGOS];
         int[] posEquipa = new int[N_JOGOS];
