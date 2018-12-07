@@ -600,3 +600,69 @@ public static int eliminarEquipa(String[][] participantes, int nParticipantes, S
             }
         }
     }
+        public static void infPremiosEquipa (double premios[][], String EquipaPremios, String participantes [][],int nParticipantes, String jogos [], String pontosJogo, int pontos[][]){
+        int id = (idJogo(jogos, pontosJogo)); 
+        String[] tempId = pontosJogo.split("_");
+        String idJogo = tempId[tempId.length - 1];
+        String ElementosEquipa[][] = new String [5][2];
+        System.out.println("Para o id de jogo "+idJogo+":");
+        for (int i = 0; i < nParticipantes; i=i+3){
+            if (participantes[i][3].equalsIgnoreCase(EquipaPremios));{
+                for(int l = 0; l < 3; l++){
+                    System.out.println("O jogador "+participantes[i][i+l]+" da equipa "+EquipaPremios+" tem "+pontos[id][i+l]+".");
+                }
+            }
+        }
+    }
+                  
+public static void VisualizarInformJogos(int[][] pontos, int numParticipantes, double[] mediasJogos, double[] percentagens, String[] idJogoColunas) {
+        calcularMediaJogo(pontos, numParticipantes, mediasJogos);
+        calcularPercentagens(pontos, numParticipantes, percentagens);
+        System.out.println("Qual o código do jogo que pretende visualizar a informação?");
+        String idJogo = input.nextLine();
+        for (int i = 0; i < N_JOGOS; i++) {
+            if (idJogo.equals(idJogoColunas[i])) {
+                System.out.println("Média dos pontos: " + mediasJogos[i]);
+                System.out.println("Percentagem de quantos nao jogaram: " + percentagens[i]);
+            }
+        }
+    }
+
+    public static void calcularMediaJogo(int[][] pontos, int numParticipantes, double[] mediasJogos) { //CALCULA AS MEDIAS E GUARDA NO VETOR MEDIASJOGOS
+        double[] somas = new double[N_JOGOS];
+        double contJogadores = 0;
+        double soma = 0;
+
+        for (int j = 0; j < N_JOGOS; j++) {
+            for (int i = 0; i < numParticipantes; i++) {
+                if (pontos[i][j] != 0) {
+                    soma = soma + pontos[i][j];
+                    contJogadores = contJogadores + 1;
+
+                }
+
+            }
+            somas[j] = soma;
+            double media = somas[j] / contJogadores;
+            mediasJogos[j] = media;
+            contJogadores = 0;
+            soma = 0;
+
+        }
+    }
+
+    public static void calcularPercentagens(int[][] pontos, int numParticipantes, double[] percentagens) { //Calcula as percentagens e guarda num vetor 
+        double contJogadoresTotal = numParticipantes;
+        double contNaoJogaram = 0;
+        for (int j = 0; j < N_JOGOS; j++) {
+            for (int i = 0; i < numParticipantes; i++) {
+                if (pontos[i][j] == 0) {
+                    contNaoJogaram++;
+                }
+
+            }
+            percentagens[j] = (contNaoJogaram / contJogadoresTotal) * 100;
+            contNaoJogaram = 0;
+        }
+    }
+     
