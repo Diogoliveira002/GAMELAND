@@ -69,7 +69,7 @@ public class utilitários {
         return false;
     }
 
-    public static int idade(String anoMesDiaP, String anoMesDiaE) {
+    public static int idade(String anoMesDiaE, String anoMesDiaP) {
         int idadeP = 0;
         int anoP = Integer.parseInt(anoMesDiaP.substring(0, 4));
         int anoE = Integer.parseInt(anoMesDiaE.substring(0, 4));
