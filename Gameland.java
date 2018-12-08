@@ -37,6 +37,11 @@ public class Gameland {
         int op;
         String dataEvento = null;
         String pontosJogo = null;
+        double [] numParticipantes = new double [N_JOGOS];
+        double [] mediasJogos = new double [N_JOGOS];
+        double [] percentagens = new double[N_JOGOS];
+        double [] somasPremios = new double [N_JOGOS];
+        String [] idJogoColunas = new String [N_JOGOS];
         do {
             op = menu();
             switch (op) {
@@ -112,6 +117,8 @@ public class Gameland {
                 case 10:
                     break;
                 case 11:
+                    input.nextLine();
+                    VisualizarInformJogos(pontos, nParticipantes, mediasJogos, percentagens, idJogoColunas, premios, somasPremios);
                     break;
                 case 12:
                     break;
@@ -609,26 +616,28 @@ public class Gameland {
         }
     }
 
-    public static void VisualizarInformJogos(int[][] pontos, int numParticipantes, double[] mediasJogos, double[] percentagens, String[] idJogoColunas) {
-        calcularMediaJogo(pontos, numParticipantes, mediasJogos);
-        calcularPercentagens(pontos, numParticipantes, percentagens);
+          public static void VisualizarInformJogos(int[][] pontos, int nParticipantes, double[] mediasJogos, double[] percentagens, String [] idJogoColunas, double [][] premios, double []somasPremios) {
+        calcularMediaJogo(pontos, nParticipantes, mediasJogos);
+        calcularPercentagens(pontos, nParticipantes, percentagens);
+        calcularSomaPremios(premios, nParticipantes, somasPremios);
         System.out.println("Qual o código do jogo que pretende visualizar a informação?");
         String idJogo = input.nextLine();
         for (int i = 0; i < N_JOGOS; i++) {
             if (idJogo.equals(idJogoColunas[i])) {
                 System.out.println("Média dos pontos: " + mediasJogos[i]);
                 System.out.println("Percentagem de quantos nao jogaram: " + percentagens[i]);
+                System.out.println("Soma dos prémios: " + somasPremios[i]);
             }
         }
     }
 
-    public static void calcularMediaJogo(int[][] pontos, int numParticipantes, double[] mediasJogos) { //CALCULA AS MEDIAS E GUARDA NO VETOR MEDIASJOGOS
+    public static void calcularMediaJogo(int[][] pontos, int nParticipantes, double[] mediasJogos) { //CALCULA AS MEDIAS E GUARDA NO VETOR MEDIASJOGOS
         double[] somas = new double[N_JOGOS];
         double contJogadores = 0;
         double soma = 0;
 
         for (int j = 0; j < N_JOGOS; j++) {
-            for (int i = 0; i < numParticipantes; i++) {
+            for (int i = 0; i < nParticipantes; i++) {
                 if (pontos[i][j] != 0) {
                     soma = soma + pontos[i][j];
                     contJogadores = contJogadores + 1;
@@ -645,11 +654,12 @@ public class Gameland {
         }
     }
 
-    public static void calcularPercentagens(int[][] pontos, int numParticipantes, double[] percentagens) { //Calcula as percentagens e guarda num vetor 
-        double contJogadoresTotal = numParticipantes;
+    public static void calcularPercentagens(int[][] pontos, int nParticipantes, double[] percentagens) { //Calcula as percentagens e guarda num vetor 
+        double contJogadoresTotal = nParticipantes;
         double contNaoJogaram = 0;
+
         for (int j = 0; j < N_JOGOS; j++) {
-            for (int i = 0; i < numParticipantes; i++) {
+            for (int i = 0; i < nParticipantes; i++) {
                 if (pontos[i][j] == 0) {
                     contNaoJogaram++;
                 }
@@ -658,8 +668,20 @@ public class Gameland {
             percentagens[j] = (contNaoJogaram / contJogadoresTotal) * 100;
             contNaoJogaram = 0;
         }
-    }
 
+    }
+    public static void calcularSomaPremios(double [][]premios, int nParticipantes, double [] somasPremios){
+        
+        double soma = 0;
+        for (int j = 0; j < N_JOGOS; j++) {
+            for (int i = 0; i < nParticipantes; i++) {
+                soma = soma + premios[i][j];
+                
+            }
+            somasPremios[j] = soma;
+            soma = 0;
+            }
+    }
     public static void listarInformacoesEcra(int[][] pontos, int nParticipantes, double[][] premios) {
 
     }
